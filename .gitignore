@@ -1,0 +1,21 @@
+# Django #
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+media/
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.idea
+social_network/local_settings.py
+/social_network/wsgi.py
+migrations
+files
+static_cdn/static_root/admin
