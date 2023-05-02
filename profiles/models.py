@@ -19,7 +19,7 @@ class Profile(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'{self.user.username} - {self.created_at}'
+        return f'{self.user.username} ({self.created_at.strftime("%Y-%m-%d")})'
 
     def save(self, *args, **kwargs):
         ex = False
@@ -33,3 +33,20 @@ class Profile(models.Model):
             to_slug = str(self.user)
         self.slug = to_slug
         super().save(*args, **kwargs)
+
+
+STATUS_CHOICES = (
+    ('send', 'Send'),
+    ('accepted', 'Accepted')
+)
+
+
+class Relationship(models.Model):
+    sender = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='sender')
+    receiver = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='receiver')
+    status = models.CharField(max_length=8, choices=STATUS_CHOICES)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.sender}-{self.receiver}-{self.status}"
