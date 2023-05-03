@@ -3,7 +3,11 @@
     My Profile
 {% endblock %}
 {% block content %}
-    My Profile
+    <form action="" method="POST" class="ui form" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="ui positive button">update</button>
+    </form>
 {% endblock %}
 {% block scripts %}
 
