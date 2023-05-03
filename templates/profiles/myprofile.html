@@ -3,6 +3,9 @@
     My Profile
 {% endblock %}
 {% block content %}
+    {% if confirm %}
+        <div class="ui green message">Profile Update Successfully</div>
+    {% endif %}
     <form action="" method="POST" class="ui form" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
