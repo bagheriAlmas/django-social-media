@@ -21,6 +21,12 @@ class Profile(models.Model):
     def __str__(self):
         return f'{self.user.username} ({self.created_at.strftime("%Y-%m-%d")})'
 
+    def get_friends(self):
+        return self.friends.all()
+
+    def get_friends_count(self):
+        return self.friends.all().count()
+
     def save(self, *args, **kwargs):
         ex = False
         if self.first_name and self.last_name:
