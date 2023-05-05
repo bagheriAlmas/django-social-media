@@ -38,6 +38,8 @@ INSTALLED_APPS = [
 
     'profiles.apps.ProfilesConfig',
     'posts.apps.PostsConfig',
+
+    'fontawesomefree'
 ]
 
 MIDDLEWARE = [
