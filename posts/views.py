@@ -2,14 +2,24 @@ from django.shortcuts import render, redirect
 
 from posts.models import Post, Like
 from profiles.models import Profile
+from .forms import PostModelForm
 
 
 def post_list_view(request):
     posts = Post.objects.all()
     profile = Profile.objects.get(user=request.user)
+    form = PostModelForm(request.POST or None, request.FILES or None)
+
+    if form.is_valid():
+        instance = form.save(commit=False)
+        instance.author = profile
+        instance.save()
+        form = PostModelForm()
+
     context = {
         'posts': posts,
-        'profile': profile
+        'profile': profile,
+        'form': form,
     }
     return render(request, 'posts/post-list.html', context)
 
