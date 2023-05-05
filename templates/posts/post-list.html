@@ -25,6 +25,14 @@
                                 &nbsp; {{ post.likes_count }}
                             </form>
                         </div>
+                        <div>
+
+                            {% if post.comment_set.all %}
+                                {% for comment in post.comment_set.all %}
+                                    <p>{{ comment.content }}</p>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
                         <form action="" method="POST" class="ui form">
                             {% csrf_token %}
                             <input type="hidden" name="post_id" value="{{ post.id }}">
@@ -36,7 +44,7 @@
             </div>
             <div class="five wide column">
                 {% if post_added %}
-                    <div class="ui green message">Post Added </div>
+                    <div class="ui green message">Post Added</div>
                 {% endif %}
                 <form action="" method="POST" class="ui form" enctype="multipart/form-data">
                     {% csrf_token %}
