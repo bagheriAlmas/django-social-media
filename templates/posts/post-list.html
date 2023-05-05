@@ -27,17 +27,21 @@
                         </div>
                         <form action="" method="POST" class="ui form">
                             {% csrf_token %}
+                            <input type="hidden" name="post_id" value="{{ post.id }}">
                             {{ comment_form }}
-                            <button type="submit" class="ui primary button">Comment</button>
+                            <button type="submit" class="ui primary button" name="btnCommentSubmit">Comment</button>
                         </form>
                     </div>
                 {% endfor %}
             </div>
             <div class="five wide column">
+                {% if post_added %}
+                    <div class="ui green message">Post Added </div>
+                {% endif %}
                 <form action="" method="POST" class="ui form" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ post_form }}
-                    <button type="submit" class="ui button positive">Send Post</button>
+                    <button type="submit" class="ui button positive" name="btnPostSubmit">Send Post</button>
                 </form>
             </div>
         </div>
