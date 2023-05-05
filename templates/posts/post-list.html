@@ -25,13 +25,18 @@
                                 &nbsp; {{ post.likes_count }}
                             </form>
                         </div>
+                        <form action="" method="POST" class="ui form">
+                            {% csrf_token %}
+                            {{ comment_form }}
+                            <button type="submit" class="ui primary button">Comment</button>
+                        </form>
                     </div>
                 {% endfor %}
             </div>
             <div class="five wide column">
                 <form action="" method="POST" class="ui form" enctype="multipart/form-data">
                     {% csrf_token %}
-                    {{ form }}
+                    {{ post_form }}
                     <button type="submit" class="ui button positive">Send Post</button>
                 </form>
             </div>

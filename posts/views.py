@@ -2,24 +2,26 @@ from django.shortcuts import render, redirect
 
 from posts.models import Post, Like
 from profiles.models import Profile
-from .forms import PostModelForm
+from .forms import PostModelForm, CommentModelForm
 
 
 def post_list_view(request):
     posts = Post.objects.all()
     profile = Profile.objects.get(user=request.user)
-    form = PostModelForm(request.POST or None, request.FILES or None)
-
-    if form.is_valid():
-        instance = form.save(commit=False)
+    post_form = PostModelForm(request.POST or None, request.FILES or None)
+    comment_form = CommentModelForm(request.POST or None)
+    if post_form.is_valid():
+        instance = post_form.save(commit=False)
         instance.author = profile
         instance.save()
-        form = PostModelForm()
+        post_form = PostModelForm()
 
     context = {
         'posts': posts,
         'profile': profile,
-        'form': form,
+        'post_form': post_form,
+        'comment_form': comment_form,
+
     }
     return render(request, 'posts/post-list.html', context)
 
