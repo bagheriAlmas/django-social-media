@@ -12,14 +12,18 @@
                             {{ post.content }}
                         </div>
                         <div content="content">
-                            <button class="ui primary button">Like</button>
+                            <form action="{% url 'like-post-view' %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="post_id" value="{{ post.id }}">
+                                <button type="submit" class="ui primary button">Like</button>
+                            </form>
                         </div>
                     </div>
                 {% endfor %}
             </div>
-        <div class="five wide column">
-            Form
-        </div>
+            <div class="five wide column">
+                Form
+            </div>
         </div>
     </div>
 {% endblock %}
