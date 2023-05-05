@@ -4499,7 +4499,7 @@ jQuery.extend( {
 		dataUser.remove( elem, name );
 	},
 
-	// 
+	//
 	// with direct calls to dataPriv methods, these can be deprecated.
 	_data: function( elem, name, data ) {
 		return dataPriv.access( elem, name, data );

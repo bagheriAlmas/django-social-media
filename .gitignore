@@ -18,4 +18,4 @@ social_network/local_settings.py
 /social_network/wsgi.py
 migrations
 files
-static_cdn
+static_cdn/media_root/avatars
