@@ -17,7 +17,6 @@
                                 <input type="hidden" name="post_id" value="{{ post.id }}">
                                 <button type="submit" class="ui primary button">
                                     {% if profile not in post.liked.all %}
-
                                         <i class="fa-regular fa-thumbs-up"></i> &nbsp;Like
                                     {% else %}
                                         <i class="fa-solid fa-thumbs-up"></i>&nbsp;Unlike
@@ -30,7 +29,11 @@
                 {% endfor %}
             </div>
             <div class="five wide column">
-                Form
+                <form action="" method="POST" class="ui form" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form }}
+                    <button type="submit" class="ui button positive">Send Post</button>
+                </form>
             </div>
         </div>
     </div>
