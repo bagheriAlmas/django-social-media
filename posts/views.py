@@ -6,8 +6,10 @@ from profiles.models import Profile
 
 def post_list_view(request):
     posts = Post.objects.all()
+    profile = Profile.objects.get(user=request.user)
     context = {
-        'posts': posts
+        'posts': posts,
+        'profile': profile
     }
     return render(request, 'posts/post-list.html', context)
 
