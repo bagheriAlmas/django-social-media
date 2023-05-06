@@ -13,8 +13,8 @@
                 <div class="ui grid">
                     <div class="row">
                         {% if request.user == post.author.user %}
-                            <a href=""><button class="ui button bwhite-lg ">Update</button></a>
-                            <a href=""><button class="ui button bwhite-lg ">Delete</button></a>
+                            <a href="{% url 'update-view' post.pk %}"><button class="ui button bwhite-lg ">Update</button></a>
+                            <a href="{% url 'delete-view' post.pk %}"><button class="ui button bwhite-lg ">Delete</button></a>
                         {% endif %}
                     </div>
                 </div>
