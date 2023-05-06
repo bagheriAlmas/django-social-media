@@ -1,4 +1,7 @@
+from django.contrib import messages
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
+from django.views.generic import DeleteView, UpdateView
 
 from posts.models import Post, Like
 from profiles.models import Profile
@@ -67,3 +70,31 @@ def like_unlike_post(request):
             post_obj.save()
             like.save()
     return redirect('post-list')
+
+
+class PostDeleteView(DeleteView):
+    model = Post
+    template_name = 'posts/confirm_delete.html'
+    success_url = reverse_lazy('post-list')
+
+    def get_object(self, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        obj = Post.objects.get(pk=pk)
+        if not obj.author.user == self.request.user:
+            messages.warning(self.request, 'You need to be the author of the post in order to delete this post')
+        return obj
+
+
+class PostUpdateView(UpdateView):
+    model = Post
+    form_class = PostModelForm
+    template_name = 'posts/update.html'
+    success_url = reverse_lazy('post-list')
+
+    def form_valid(self, form):
+        profile = Profile.objects.get(user=self.request.user)
+        if form.instance.author == profile:
+            return super().form_valid(form)
+        else:
+            form.add_error(None, "You need to be the author of the post in order to update this post")
+            return super().form_valid(form)
