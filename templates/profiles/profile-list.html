@@ -19,7 +19,7 @@
                         <button class="ui primary button">See Profile</button>
 
                         {% if profile.user not in relationship_receiver and profile.user not in relationship_sender %}
-                            <form action="" method="POST">
+                            <form action="{% url 'send-invite' %}" method="POST">
                                 {% csrf_token %}
                                 <input type="hidden" name="profile_pk" value="{{ profile.pk }}">
                                 <button type="submit" class="ui positive basic button">
