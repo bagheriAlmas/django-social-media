@@ -10,7 +10,21 @@ class ProfileManager(models.Manager):
         profiles = Profile.objects.all().exclude(user=me)
         return profiles
 
+    def get_all_available_profiles_to_invite(self, sender):
+        profiles = Profile.objects.all().exclude(user=sender)
+        profile = Profile.objects.get(user=sender)
+        qs = Relationship.objects.filter(Q(sender=profile) | Q(receiver=profile))
 
+        accepted = set([]) # remove duplicate value automatically
+        for rel in qs:
+            if rel.status == 'accepted':
+                accepted.add(rel.receiver)
+                accepted.add(rel.sender)
+                print(qs)
+        print(accepted)
+        available = [profile for profile in profiles if profile not in accepted]
+        print(available)
+        return available
 
 
 class Profile(models.Model):
