@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (profile_view, invites_received_view, available_profile_list_view, ProfileListView,
-                    send_invitation_view)
+                    send_invitation_view, remove_from_friends_view)
 
 urlpatterns = [
     path('myprofile/', profile_view, name='my-profile-view'),
@@ -8,4 +8,5 @@ urlpatterns = [
     path('profiles-list/', ProfileListView.as_view(), name='all-profiles-view'),
     path('available-profiles-list/', available_profile_list_view, name='available-profiles-view'),
     path('send-invite/', send_invitation_view, name='send-invite'),
+    path('remove-friend/', remove_from_friends_view, name='remove-friend'),
 ]
