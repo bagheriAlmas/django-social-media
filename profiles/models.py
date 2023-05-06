@@ -1,8 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
-
+from django.db.models import Q
 from profiles.utils import get_random_code
+
+
+class ProfileManager(models.Manager):
+    def get_all_profiles(self, me):
+        profiles = Profile.objects.all().exclude(user=me)
+        return profiles
+
+
 
 
 class Profile(models.Model):
@@ -17,6 +25,8 @@ class Profile(models.Model):
     slug = models.SlugField(unique=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = ProfileManager()
 
     def __str__(self):
         return f'{self.user.username} ({self.created_at.strftime("%Y-%m-%d")})'
