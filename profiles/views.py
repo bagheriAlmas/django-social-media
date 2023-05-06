@@ -1,4 +1,7 @@
+from django.contrib.auth.models import User
 from django.shortcuts import render
+from django.views.generic import ListView
+
 from .models import Profile, Relationship, ProfileManager
 from .forms import ProfileModelForm
 
@@ -32,14 +35,49 @@ def invites_received_view(request):
     return render(request, 'profiles/my-invites.html', context)
 
 
-def profile_list_view(request):
-    user = request.user
-    qs = Profile.objects.get_all_profiles(user)
+# def profile_list_view(request):
+#     user = request.user
+#     qs = Profile.objects.get_all_profiles(user)
+#
+#     context = {
+#         'qs': qs
+#     }
+#     return render(request, 'profiles/profile-list.html', context)
+#
 
-    context = {
-        'qs': qs
-    }
-    return render(request, 'profiles/profile-list.html', context)
+class ProfileListView(ListView):
+    model = Profile
+    template_name = 'profiles/profile-list.html'
+
+    def get_queryset(self):
+        qs = Profile.objects.get_all_profiles(self.request.user)
+        return qs
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        user = User.objects.get(username__iexact=self.request.user)
+        profile = Profile.objects.get(user=user)
+
+        relationship_receiver_object = Relationship.objects.filter(sender=profile)
+        relationship_sender_object = Relationship.objects.filter(receiver=profile)
+
+        relationship_receiver_list = []
+        relationship_sender_list = []
+
+        for item in relationship_receiver_object:
+            relationship_receiver_list.append(item.receiver.user)
+        for item in relationship_sender_object:
+            relationship_sender_list.append(item.sender.user)
+
+        context['relationship_receiver'] = relationship_receiver_list
+        context['relationship_sender'] = relationship_sender_list
+        context['is_empty'] = False
+
+        if len(self.get_queryset()) == 0:
+            context['is_empty'] = True
+
+        return context
 
 
 def available_profile_list_view(request):
