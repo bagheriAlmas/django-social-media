@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.views.generic import ListView
 
@@ -88,6 +89,21 @@ def send_invitation_view(request):
         receiver = Profile.objects.get(pk=pk)
 
         Relationship.objects.create(sender=sender, receiver=receiver, status='send')
+        return redirect(request.META.get('HTTP_REFERER'))
+    return redirect('my-profile-view')
+
+
+def remove_from_friends_view(request):
+    if request.method == 'POST':
+        pk = request.POST.get('profile_pk')
+        user = request.user
+        sender = Profile.objects.get(user=user)
+        receiver = Profile.objects.get(pk=pk)
+
+        relationship = Relationship.objects.get(
+            (Q(sender=sender) & Q(receiver=receiver)) | (Q(sender=receiver) & Q(receiver=sender))
+        )
+        relationship.delete()
         return redirect(request.META.get('HTTP_REFERER'))
     return redirect('my-profile-view')
 
