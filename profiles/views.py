@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import ListView
 
 from .models import Profile, Relationship, ProfileManager
@@ -78,6 +78,18 @@ class ProfileListView(ListView):
             context['is_empty'] = True
 
         return context
+
+
+def send_invitation_view(request):
+    if request.method == 'POST':
+        pk = request.POST.get('profile_pk')
+        user = request.user
+        sender = Profile.objects.get(user=user)
+        receiver = Profile.objects.get(pk=pk)
+
+        Relationship.objects.create(sender=sender, receiver=receiver, status='send')
+        return redirect(request.META.get('HTTP_REFERER'))
+    return redirect('my-profile-view')
 
 
 def available_profile_list_view(request):
