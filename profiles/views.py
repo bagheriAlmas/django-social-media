@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Profile, Relationship
+from .models import Profile, Relationship, ProfileManager
 from .forms import ProfileModelForm
 
 
@@ -30,3 +30,13 @@ def invites_received_view(request):
         'invites_received': invites_received
     }
     return render(request, 'profiles/my-invites.html', context)
+
+
+def profile_list_view(request):
+    user = request.user
+    qs = Profile.objects.get_all_profiles(user)
+
+    context = {
+        'qs': qs
+    }
+    return render(request, 'profiles/profile-list.html', context)
