@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}
+    Invite People
+{% endblock %}
+{% block content %}
+    <ul>
+        {% for profile in available_profiles %}
+            <li>{{ profile }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -40,3 +40,13 @@ def profile_list_view(request):
         'qs': qs
     }
     return render(request, 'profiles/profile-list.html', context)
+
+
+def available_profile_list_view(request):
+    user = request.user
+    available_profiles = Profile.objects.get_all_available_profiles_to_invite(user)
+
+    context = {
+        'available_profiles': available_profiles
+    }
+    return render(request, 'profiles/available-profile-list.html', context)
