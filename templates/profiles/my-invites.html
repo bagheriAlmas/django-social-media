@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}
+    My Invites
+{% endblock %}
+{% block content %}
+    <ul>
+        {% for invites in invites_received %}
+            <li>{{ invites.sender }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
