@@ -8,7 +8,39 @@
     {% endif %}
     <ul>
         {% for invites in invites_received %}
-            <li>{{ invites.sender }}</li>
+            <div class="ui segment">
+                <div class="ui grid">
+                    <div class="row">
+                        <div class="three wide column">
+                            <img class="ui small circular image" src="{{ invites.sender.avatar.url }}">
+                        </div>
+                        <div class="thirteen wide column">
+                            <h3>{{ invites.sender.user }}</h3>
+                            <p>{{ invites.sender.bio }}</p><br>
+                            <a href="">
+                                <button class="ui primary button w-big mb-5">See profile</button>
+                            </a>
+
+                            <form action="{% url 'accept-invites-view' %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="profile_pk" value="{{ invites.sender.pk }}">
+                                <button class="ui positive basic button w-big mb-5"><i class="check icon"></i>Reject
+                                    Invite
+                                </button>
+
+                            </form>
+
+                            <form action="{% url 'reject-invites-view' %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="profile_pk" value="{{ invites.sender.pk }}">
+                                <button class="ui negative basic button w-big mb-5"><i class="close icon"></i>Reject
+                                    Invite
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         {% endfor %}
     </ul>
 {% endblock %}
