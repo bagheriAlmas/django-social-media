@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.db.models import Q
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView
 
 from .models import Profile, Relationship, ProfileManager
@@ -122,8 +122,22 @@ def available_profile_list_view(request):
 
 
 def accept_invitation(request):
-    pass
+    if request.method == "POST":
+        pk = request.POST.get('profile_pk')
+        sender = Profile.objects.get(pk=pk)
+        receiver = Profile.objects.get(user=request.user)
+        relationship = get_object_or_404(Relationship, sender=sender, receiver=receiver)
+        if relationship.status == 'send':
+            relationship.status = 'accepted'
+            relationship.save()
+    return redirect('my-invites-view')
 
 
 def reject_invitation(request):
-    pass
+    if request.method == "POST":
+        pk = request.POST.get('profile_pk')
+        sender = Profile.objects.get(pk=pk)
+        receiver = Profile.objects.get(user=request.user)
+        relationship = get_object_or_404(Relationship, sender=sender, receiver=receiver)
+        relationship.delete()
+    return redirect('my-invites-view')
