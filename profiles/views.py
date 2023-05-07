@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 from .models import Profile, Relationship, ProfileManager
 from .forms import ProfileModelForm
@@ -81,6 +81,39 @@ class ProfileListView(ListView):
         if len(self.get_queryset()) == 0:
             context['is_empty'] = True
 
+        return context
+
+
+class ProfileDetailView(DetailView):
+    model = Profile
+    template_name = 'profiles/detail.html'
+
+    def get_object(self, queryset=None):
+        slug = self.kwargs.get('slug')
+        profile = Profile.objects.get(slug=slug)
+        return profile
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        user = User.objects.get(username__iexact=self.request.user)
+        profile = Profile.objects.get(user=user)
+
+        relationship_receiver_object = Relationship.objects.filter(sender=profile)
+        relationship_sender_object = Relationship.objects.filter(receiver=profile)
+
+        relationship_receiver_list = []
+        relationship_sender_list = []
+
+        for item in relationship_receiver_object:
+            relationship_receiver_list.append(item.receiver.user)
+        for item in relationship_sender_object:
+            relationship_sender_list.append(item.sender.user)
+
+        context['relationship_receiver'] = relationship_receiver_list
+        context['relationship_sender'] = relationship_sender_list
+        context['posts'] = self.get_object().get_all_authors_posts()
+        context['len_posts'] = True if len(self.get_object().get_all_authors_posts()) > 0 else False
         return context
 
 
