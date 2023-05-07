@@ -16,7 +16,7 @@
                     <div class="thirteen wide column">
                         <h3>{{ profile.user }}</h3>
                         <p>{{ profile.bio }}</p>
-                        <button class="ui primary button mt-5 w-big">See Profile</button>
+                        <a href="{{ profile.get_absolute_url }}"><button class="ui primary button mt-5 w-big">See Profile</button></a>
 
                         {% if profile.user not in relationship_receiver and profile.user not in relationship_sender %}
                             <form action="{% url 'send-invite' %}" method="POST">

@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 from django.db.models import Q
+from django.urls import reverse
+
 from profiles.utils import get_random_code
 
 
@@ -44,6 +46,9 @@ class Profile(models.Model):
 
     def __str__(self):
         return f'{self.user.username} ({self.created_at.strftime("%Y-%m-%d")})'
+
+    def get_absolute_url(self):
+        return reverse('profiles-detail-view', kwargs={'slug': self.slug})
 
     __init_first_name = None
     __init_last_name = None
