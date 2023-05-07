@@ -3,6 +3,9 @@
     My Invites
 {% endblock %}
 {% block content %}
+    {% if is_empty %}
+        <h3>There is no request for you</h3>
+    {% endif %}
     <ul>
         {% for invites in invites_received %}
             <li>{{ invites.sender }}</li>

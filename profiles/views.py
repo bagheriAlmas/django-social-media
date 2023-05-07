@@ -29,9 +29,12 @@ def profile_view(request):
 def invites_received_view(request):
     profile = Profile.objects.get(user=request.user)
     invites_received = Relationship.objects.invitation_received(profile)
-
+    is_empty = False
+    if len(invites_received.all()) == 0:
+        is_empty = True
     context = {
-        'invites_received': invites_received
+        'invites_received': invites_received,
+        'is_empty': is_empty,
     }
     return render(request, 'profiles/my-invites.html', context)
 
@@ -116,3 +119,11 @@ def available_profile_list_view(request):
         'available_profiles': available_profiles
     }
     return render(request, 'profiles/available-profile-list.html', context)
+
+
+def accept_invitation(request):
+    pass
+
+
+def reject_invitation(request):
+    pass
