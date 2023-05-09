@@ -1,4 +1,7 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView, UpdateView
@@ -8,6 +11,7 @@ from profiles.models import Profile
 from .forms import PostModelForm, CommentModelForm
 
 
+@login_required
 def post_list_view(request):
     posts = Post.objects.all()
     profile = Profile.objects.get(user=request.user)
@@ -45,6 +49,7 @@ def post_list_view(request):
     return render(request, 'posts/post-list.html', context)
 
 
+@login_required
 def like_unlike_post(request):
     user = request.user
     if request.method == 'POST':
@@ -69,10 +74,16 @@ def like_unlike_post(request):
 
             post_obj.save()
             like.save()
+
+        # data = {
+        #     'value': like.value,
+        #     'likes': post_obj.liked.all().count()
+        # }
+        # return JsonResponse(data, safe=False)
     return redirect('post-list')
 
 
-class PostDeleteView(DeleteView):
+class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
     template_name = 'posts/confirm_delete.html'
     success_url = reverse_lazy('post-list')
@@ -85,7 +96,7 @@ class PostDeleteView(DeleteView):
         return obj
 
 
-class PostUpdateView(UpdateView):
+class PostUpdateView(LoginRequiredMixin, UpdateView):
     model = Post
     form_class = PostModelForm
     template_name = 'posts/update.html'

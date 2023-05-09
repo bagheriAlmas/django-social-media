@@ -5,9 +5,11 @@ from django.views.generic import ListView, DetailView
 
 from .models import Profile, Relationship, ProfileManager
 from .forms import ProfileModelForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-# Create your views here.
+@login_required()
 def profile_view(request):
     profile = Profile.objects.get(user=request.user)
     form = ProfileModelForm(request.POST or None, request.FILES or None, instance=profile)
@@ -26,6 +28,7 @@ def profile_view(request):
     return render(request, 'profiles/myprofile.html', context)
 
 
+@login_required()
 def invites_received_view(request):
     profile = Profile.objects.get(user=request.user)
     invites_received = Relationship.objects.invitation_received(profile)
@@ -49,7 +52,7 @@ def invites_received_view(request):
 #     return render(request, 'profiles/profile-list.html', context)
 #
 
-class ProfileListView(ListView):
+class ProfileListView(LoginRequiredMixin, ListView):
     model = Profile
     template_name = 'profiles/profile-list.html'
 
@@ -84,14 +87,14 @@ class ProfileListView(ListView):
         return context
 
 
-class ProfileDetailView(DetailView):
+class ProfileDetailView(LoginRequiredMixin, DetailView):
     model = Profile
     template_name = 'profiles/detail.html'
 
-    def get_object(self, queryset=None):
-        slug = self.kwargs.get('slug')
-        profile = Profile.objects.get(slug=slug)
-        return profile
+    # def get_object(self, queryset=None):
+    #     slug = self.kwargs.get('slug')
+    #     profile = Profile.objects.get(slug=slug)
+    #     return profile
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -117,6 +120,7 @@ class ProfileDetailView(DetailView):
         return context
 
 
+@login_required()
 def send_invitation_view(request):
     if request.method == 'POST':
         pk = request.POST.get('profile_pk')
@@ -129,6 +133,7 @@ def send_invitation_view(request):
     return redirect('my-profile-view')
 
 
+@login_required()
 def remove_from_friends_view(request):
     if request.method == 'POST':
         pk = request.POST.get('profile_pk')
@@ -144,6 +149,7 @@ def remove_from_friends_view(request):
     return redirect('my-profile-view')
 
 
+@login_required()
 def available_profile_list_view(request):
     user = request.user
     available_profiles = Profile.objects.get_all_available_profiles_to_invite(user)
@@ -154,6 +160,7 @@ def available_profile_list_view(request):
     return render(request, 'profiles/available-profile-list.html', context)
 
 
+@login_required()
 def accept_invitation(request):
     if request.method == "POST":
         pk = request.POST.get('profile_pk')
@@ -166,6 +173,7 @@ def accept_invitation(request):
     return redirect('my-invites-view')
 
 
+@login_required()
 def reject_invitation(request):
     if request.method == "POST":
         pk = request.POST.get('profile_pk')
