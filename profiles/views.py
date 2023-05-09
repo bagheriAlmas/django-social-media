@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-@login_required()
+@login_required
 def profile_view(request):
     profile = Profile.objects.get(user=request.user)
     form = ProfileModelForm(request.POST or None, request.FILES or None, instance=profile)
@@ -28,7 +28,7 @@ def profile_view(request):
     return render(request, 'profiles/myprofile.html', context)
 
 
-@login_required()
+@login_required
 def invites_received_view(request):
     profile = Profile.objects.get(user=request.user)
     invites_received = Relationship.objects.invitation_received(profile)
@@ -120,7 +120,7 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
         return context
 
 
-@login_required()
+@login_required
 def send_invitation_view(request):
     if request.method == 'POST':
         pk = request.POST.get('profile_pk')
@@ -133,7 +133,7 @@ def send_invitation_view(request):
     return redirect('my-profile-view')
 
 
-@login_required()
+@login_required
 def remove_from_friends_view(request):
     if request.method == 'POST':
         pk = request.POST.get('profile_pk')
@@ -149,7 +149,7 @@ def remove_from_friends_view(request):
     return redirect('my-profile-view')
 
 
-@login_required()
+@login_required
 def available_profile_list_view(request):
     user = request.user
     available_profiles = Profile.objects.get_all_available_profiles_to_invite(user)
@@ -160,7 +160,7 @@ def available_profile_list_view(request):
     return render(request, 'profiles/available-profile-list.html', context)
 
 
-@login_required()
+@login_required
 def accept_invitation(request):
     if request.method == "POST":
         pk = request.POST.get('profile_pk')
@@ -173,7 +173,7 @@ def accept_invitation(request):
     return redirect('my-invites-view')
 
 
-@login_required()
+@login_required
 def reject_invitation(request):
     if request.method == "POST":
         pk = request.POST.get('profile_pk')
