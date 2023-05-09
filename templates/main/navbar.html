@@ -48,6 +48,7 @@
                 </div>
 
                 <a href="{{ path_to_my_profile }}" class="{% if request.path == path_to_profile %}active {% endif %}item">
+                   <img src="{{ picture.url }}" class="ui avatar image">&nbsp;
                     {{ request.user }}
                 </a>
 
