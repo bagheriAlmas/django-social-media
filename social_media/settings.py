@@ -67,6 +67,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'profiles.context_processor.profile_pic',
+                'profiles.context_processor.invitation_receive_number',
             ],
         },
     },
