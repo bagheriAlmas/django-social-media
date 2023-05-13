@@ -24,7 +24,7 @@
                             <form action="{% url 'accept-invites-view' %}" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" name="profile_pk" value="{{ invites.sender.pk }}">
-                                <button class="ui positive basic button w-big mb-5"><i class="check icon"></i>Reject
+                                <button class="ui positive basic button w-big mb-5"><i class="check icon"></i>Accept
                                     Invite
                                 </button>
 
