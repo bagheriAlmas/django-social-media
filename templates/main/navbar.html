@@ -5,6 +5,7 @@
 {% url 'my-invites-view' as path_to_my_invites %}
 {% url 'available-profiles-view' as path_to_invites %}
 {% url 'all-profiles-view' as path_to_all_profiles %}
+{% url 'pending-request-view' as path_to_all_pending_requests %}
 
 <div class="ui inverted menu nav mb-7">
     <div class="ui container">
@@ -26,8 +27,8 @@
                             <a href="{{ path_to_all_profiles }}" class="{% if request.path == path_to_all_profiles %}active {% endif %}item">
                                 All Profiles
                             </a>
-                            <a href="{{ path_to_invites }}" class="{% if request.path == path_to_invites %}active {% endif %}item">
-                                Send Invites
+                            <a href="{{ path_to_all_pending_requests }}" class="{% if request.path == path_to_invites %}active {% endif %}item">
+                                Pending Requests
                             </a>
                             <a href="{{ path_to_my_invites }}" class="{% if request.path == path_to_my_invites %}active {% endif %}item">
                                 Received Invites &nbsp; <div class="ui purple horizontal label">{{ invites_num }}</div>
