@@ -150,12 +150,12 @@ def remove_from_friends_view(request):
 
 
 @login_required
-def available_profile_list_view(request):
+def suggestions_list_view(request):
     user = request.user
-    available_profiles = Profile.objects.get_all_available_profiles_to_invite(user)
+    suggestions = Profile.objects.get_all_available_profiles_to_invite(user)
 
     context = {
-        'available_profiles': available_profiles
+        'suggestions': suggestions
     }
     return render(request, 'profiles/available-profile-list.html', context)
 
