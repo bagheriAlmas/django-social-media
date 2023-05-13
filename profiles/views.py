@@ -182,3 +182,25 @@ def reject_invitation(request):
         relationship = get_object_or_404(Relationship, sender=sender, receiver=receiver)
         relationship.delete()
     return redirect('my-invites-view')
+
+
+@login_required
+def pending_request_view(request):
+    user = request.user
+    profile = Profile.objects.get(user=user)
+    relationship_receiver_object = Relationship.objects.filter(sender=profile, status='send')
+    is_empty = False
+    if relationship_receiver_object.count() == 0:
+        is_empty = True
+
+    pending_request_users = []
+
+    for item in relationship_receiver_object:
+        pending_request_users.append(item.receiver.user)
+
+    context = {
+        'pending_request_users': pending_request_users,
+        'is_empty': is_empty,
+    }
+
+    return render(request, 'profiles/pending-request.html', context)
