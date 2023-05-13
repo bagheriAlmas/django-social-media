@@ -51,3 +51,15 @@ class Like(models.Model):
 
     def __str__(self):
         return f'{self.user} - {self.post} - {self.value}'
+
+
+
+class Image(models.Model):
+    content = models.TextField(max_length=500, null=True, blank=True)
+    file = models.ImageField(upload_to='images')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    author = models.ForeignKey(Profile, on_delete=models.CASCADE,)
+
+    def __str__(self):
+        return self.content
