@@ -44,7 +44,15 @@
                         <button class="ui secondary button" id="modal-btn">update Your Profile</button>
                     </div>
                 </div>
+
                 <div class="ten wide column">
+                    <div class="ui four item menu">
+                        <a class="item">Friends &nbsp; [{{ profile.get_friends_count }}]</a>
+                        <a class="item">Like Given &nbsp;[{{ profile.get_likes_given_count }}]</a>
+                        <a class="item">Like Received &nbsp; [{{ profile.get_likes_received_count }}]</a>
+                        <a class="item">Posts &nbsp;[{{ profile.get_posts_count }}]</a>
+                    </div>
+
                     <table class="ui table">
                         <tbody>
                         <tr>
@@ -64,36 +72,15 @@
                             <td>{{ profile.bio }}</td>
                         </tr>
                         <tr>
-                            <td>number of friends</td>
-                            <td>{{ profile.get_friends_count }}</td>
-                        </tr>
-
-                        <tr>
                             <td>friends</td>
                             <td>
-                            <ul>
-                                {% for friend in profile.get_friends %}
-                                <li>{{ friend }}</li>
-                                {% endfor %}
+                                <ul>
+                                    {% for friend in profile.get_friends %}
+                                        <li>{{ friend }}</li>
+                                    {% endfor %}
                                 </ul>
                             </td>
                         </tr>
-
-                        <tr>
-                            <td>Post Count</td>
-                            <td>{{ profile.get_posts_count }}</td>
-                        </tr>
-
-                        <tr>
-                            <td>likes given count</td>
-                            <td>{{ profile.get_likes_given_count }}</td>
-                        </tr>
-
-                        <tr>
-                            <td>likes received count</td>
-                            <td>{{ profile.get_likes_received_count }}</td>
-                        </tr>
-
                         </tbody>
                     </table>
                 </div>
