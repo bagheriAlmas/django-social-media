@@ -107,25 +107,33 @@
             <div class="ui raised segments">
             {% for profile in suggestions %}
             <div class="ui segment">
-                <div class="row">
-                    <form action="{% url 'send-invite' %}" method="POST" style="display: flex;justify-content: space-between; align-items: center">
-                        {% csrf_token %}
-
+                <div class="row" style="display: flex;justify-content: space-between; align-items: center">
+                    <div >
                         <div>
                             <img class="ui avatar image" src="{{ profile.avatar.url }}">
                             <span>{{ profile.user }}</span>
                         </div>
-                        {% if profile.user in relationship_receiver and request.user not in profile.friends.all %}
+                    </div>
+
+                    {% if profile.user in relationship_receiver and request.user not in profile.friends.all %}
+                        <form action="{% url 'remove-friend' %}" method="POST" >
+                            {% csrf_token %}
                             <div>
                                 <input type="hidden" name="profile_pk" value="{{ profile.pk }}">
-                                <button type="submit" class="ui disabled button mt-5 w-small"><i class="plus square icon"></i> Pending</button>
+                                <button type="submit" class="ui basic button mt-5 w-small"><i class="user icon"></i> Pending</button>
                             </div>
-                        {% else %}
-                            <div>
+                        </form>
+                    {% else %}
+                    <form action="{% url 'send-invite' %}" method="POST" >
+                        {% csrf_token %}
+                        <div>
                                 <input type="hidden" name="profile_pk" value="{{ profile.pk }}">
                                 <button type="submit" class="ui positive basic button mt-5 w-small"><i class="plus square icon"></i> Follow</button>
                             </div>
-                        {% endif %}
+                        </form>
+                    {% endif %}
+
+
 
 
                     </form>
