@@ -1,13 +1,15 @@
 from django.contrib.auth.models import User
 from django.db.models import Q
-from django.shortcuts import render, redirect
-from django.views.generic import ListView
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import ListView, DetailView
 
 from .models import Profile, Relationship, ProfileManager
 from .forms import ProfileModelForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-# Create your views here.
+@login_required
 def profile_view(request):
     profile = Profile.objects.get(user=request.user)
     form = ProfileModelForm(request.POST or None, request.FILES or None, instance=profile)
@@ -26,12 +28,16 @@ def profile_view(request):
     return render(request, 'profiles/myprofile.html', context)
 
 
+@login_required
 def invites_received_view(request):
     profile = Profile.objects.get(user=request.user)
     invites_received = Relationship.objects.invitation_received(profile)
-
+    is_empty = False
+    if len(invites_received.all()) == 0:
+        is_empty = True
     context = {
-        'invites_received': invites_received
+        'invites_received': invites_received,
+        'is_empty': is_empty,
     }
     return render(request, 'profiles/my-invites.html', context)
 
@@ -46,7 +52,7 @@ def invites_received_view(request):
 #     return render(request, 'profiles/profile-list.html', context)
 #
 
-class ProfileListView(ListView):
+class ProfileListView(LoginRequiredMixin, ListView):
     model = Profile
     template_name = 'profiles/profile-list.html'
 
@@ -81,6 +87,40 @@ class ProfileListView(ListView):
         return context
 
 
+class ProfileDetailView(LoginRequiredMixin, DetailView):
+    model = Profile
+    template_name = 'profiles/detail.html'
+
+    # def get_object(self, queryset=None):
+    #     slug = self.kwargs.get('slug')
+    #     profile = Profile.objects.get(slug=slug)
+    #     return profile
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        user = User.objects.get(username__iexact=self.request.user)
+        profile = Profile.objects.get(user=user)
+
+        relationship_receiver_object = Relationship.objects.filter(sender=profile)
+        relationship_sender_object = Relationship.objects.filter(receiver=profile)
+
+        relationship_receiver_list = []
+        relationship_sender_list = []
+
+        for item in relationship_receiver_object:
+            relationship_receiver_list.append(item.receiver.user)
+        for item in relationship_sender_object:
+            relationship_sender_list.append(item.sender.user)
+
+        context['relationship_receiver'] = relationship_receiver_list
+        context['relationship_sender'] = relationship_sender_list
+        context['posts'] = self.get_object().get_all_authors_posts()
+        context['len_posts'] = True if len(self.get_object().get_all_authors_posts()) > 0 else False
+        return context
+
+
+@login_required
 def send_invitation_view(request):
     if request.method == 'POST':
         pk = request.POST.get('profile_pk')
@@ -93,6 +133,7 @@ def send_invitation_view(request):
     return redirect('my-profile-view')
 
 
+@login_required
 def remove_from_friends_view(request):
     if request.method == 'POST':
         pk = request.POST.get('profile_pk')
@@ -108,11 +149,58 @@ def remove_from_friends_view(request):
     return redirect('my-profile-view')
 
 
-def available_profile_list_view(request):
+@login_required
+def suggestions_list_view(request):
     user = request.user
-    available_profiles = Profile.objects.get_all_available_profiles_to_invite(user)
+    suggestions = Profile.objects.get_all_available_profiles_to_invite(user)
 
     context = {
-        'available_profiles': available_profiles
+        'suggestions': suggestions
     }
     return render(request, 'profiles/available-profile-list.html', context)
+
+
+@login_required
+def accept_invitation(request):
+    if request.method == "POST":
+        pk = request.POST.get('profile_pk')
+        sender = Profile.objects.get(pk=pk)
+        receiver = Profile.objects.get(user=request.user)
+        relationship = get_object_or_404(Relationship, sender=sender, receiver=receiver)
+        if relationship.status == 'send':
+            relationship.status = 'accepted'
+            relationship.save()
+    return redirect('my-invites-view')
+
+
+@login_required
+def reject_invitation(request):
+    if request.method == "POST":
+        pk = request.POST.get('profile_pk')
+        sender = Profile.objects.get(pk=pk)
+        receiver = Profile.objects.get(user=request.user)
+        relationship = get_object_or_404(Relationship, sender=sender, receiver=receiver)
+        relationship.delete()
+    return redirect('my-invites-view')
+
+
+@login_required
+def pending_request_view(request):
+    user = request.user
+    profile = Profile.objects.get(user=user)
+    relationship_receiver_object = Relationship.objects.filter(sender=profile, status='send')
+    is_empty = False
+    if relationship_receiver_object.count() == 0:
+        is_empty = True
+
+    pending_request_users = []
+
+    for item in relationship_receiver_object:
+        pending_request_users.append(item.receiver.user)
+
+    context = {
+        'pending_request_users': pending_request_users,
+        'is_empty': is_empty,
+    }
+
+    return render(request, 'profiles/pending-request.html', context)

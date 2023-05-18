@@ -16,7 +16,7 @@
                     <div class="thirteen wide column">
                         <h3>{{ profile.user }}</h3>
                         <p>{{ profile.bio }}</p>
-                        <button class="ui primary button mt-5 w-big">See Profile</button>
+                        <a href="{{ profile.get_absolute_url }}"><button class="ui primary button mt-5 w-big">See Profile</button></a>
 
                         {% if profile.user not in relationship_receiver and profile.user not in relationship_sender %}
                             <form action="{% url 'send-invite' %}" method="POST">
@@ -29,10 +29,16 @@
                         {% endif %}
 
                         {% if profile.user in relationship_receiver and request.user not in profile.friends.all %}
-                            <br>
-                            <button type="submit" class="ui disabled button mt-5 w-big">
-                                <i class="user icon"></i> Pending
-                            </button>
+                            <form action="{% url 'remove-friend' %}" method="POST">
+                            {% csrf_token %}
+                                <input type="hidden" name="profile_pk" value="{{ profile.pk }}">
+                            <button type="submit" class="ui basic button mt-5 w-big">
+                                    <i class="user icon "></i> Pending
+                                </button>
+                            </form>
+{#                            <button type="submit" class="ui disabled button mt-5 w-big">#}
+{#                                <i class="user icon"></i> Pending#}
+{#                            </button>#}
 
                         {% endif %}
 

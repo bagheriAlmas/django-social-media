@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 from django.db.models import Q
+from django.urls import reverse
+
 from profiles.utils import get_random_code
 
 
@@ -15,7 +17,7 @@ class ProfileManager(models.Manager):
         profile = Profile.objects.get(user=sender)
         qs = Relationship.objects.filter(Q(sender=profile) | Q(receiver=profile))
 
-        accepted = set([]) # remove duplicate value automatically
+        accepted = set([])  # remove duplicate value automatically
         for rel in qs:
             if rel.status == 'accepted':
                 accepted.add(rel.receiver)
@@ -44,6 +46,32 @@ class Profile(models.Model):
 
     def __str__(self):
         return f'{self.user.username} ({self.created_at.strftime("%Y-%m-%d")})'
+
+    def get_absolute_url(self):
+        return reverse('profiles-detail-view', kwargs={'slug': self.slug})
+
+    __init_first_name = None
+    __init_last_name = None
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__init_first_name = self.first_name
+        self.__init_last_name = self.last_name
+
+    def save(self, *args, **kwargs):
+        ex = False
+        to_slug = self.slug
+        if self.first_name != self.__init_first_name or self.last_name != self.__init_last_name or self.slug == "":
+            if self.first_name and self.last_name:
+                to_slug = slugify(str(self.first_name) + " " + str(self.last_name))
+                ex = Profile.objects.filter(slug=to_slug).exists()
+                while ex:
+                    to_slug = slugify(to_slug + " " + str(get_random_code()))
+                    ex = Profile.objects.filter(slug=to_slug).exists()
+            else:
+                to_slug = str(self.user)
+        self.slug = to_slug
+        super().save(*args, **kwargs)
 
     def get_friends(self):
         return self.friends.all()
@@ -74,19 +102,6 @@ class Profile(models.Model):
             print(item.liked.all())
             total_liked += item.like_set.all().count()
         return total_liked
-
-    def save(self, *args, **kwargs):
-        ex = False
-        if self.first_name and self.last_name:
-            to_slug = slugify(str(self.first_name) + " " + str(self.last_name))
-            ex = Profile.objects.filter(slug=to_slug).exists()
-            while ex:
-                to_slug = slugify(to_slug + " " + str(get_random_code()))
-                ex = Profile.objects.filter(slug=to_slug).exists()
-        else:
-            to_slug = str(self.user)
-        self.slug = to_slug
-        super().save(*args, **kwargs)
 
 
 STATUS_CHOICES = (

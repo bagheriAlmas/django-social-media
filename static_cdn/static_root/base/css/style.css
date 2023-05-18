@@ -21,6 +21,10 @@ body {
 .w-big{
     width: 200px !important;
 }
+
+.w-small{
+    width: 50px !important;
+}
 .mymodal {
     height: 300px !important;
     top: 200px !important;

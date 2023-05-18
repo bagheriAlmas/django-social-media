@@ -6,8 +6,12 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
     <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+{#    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>#}
+    <script src="https://code.jquery.com/jquery-3.7.0.js"
+            integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+
     <!--Custom css ADD HERE-->
 
     <!-- semantic UI -->
@@ -16,7 +20,13 @@
     <link rel="stylesheet" href="{% static 'static_root/base/css/style.css' %}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
 
+<!-- cropper -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropper/4.1.0/cropper.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropper/4.1.0/cropper.min.css">
+    <link rel="stylesheet" href="{% static 'static_root/base/css/test_style.css' %}">
 
+
+{#    <script src="{% static 'static_root/base/js/test_main.js' %}"></script>#}
     <title>AlmasGram - {% block title %}{% endblock title %}</title>
 </head>
 <body>
