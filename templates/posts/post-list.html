@@ -116,9 +116,9 @@
                     </div>
 
                     {% if profile.user in relationship_receiver and request.user not in profile.friends.all %}
-                        <form action="{% url 'remove-friend' %}" method="POST" >
+                        <form action="{% url 'remove-friend' %}" method="POST" style="width: 120px !important;">
                             {% csrf_token %}
-                            <div>
+                            <div class="w-small">
                                 <input type="hidden" name="profile_pk" value="{{ profile.pk }}">
                                 <button type="submit" class="ui basic button mt-5 w-small"><i class="user icon"></i> Pending</button>
                             </div>

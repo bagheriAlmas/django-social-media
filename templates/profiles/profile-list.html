@@ -9,15 +9,17 @@
     {% for profile in object_list %}
         <div class="ui segment">
             <div class="ui grid">
-                <div class="row">
-                    <div class="three wide column">
-                        <img class="ui small circular image" src="{{ profile.avatar.url }}">
+                <div class="row" onclick="window.location.href = '{{ profile.get_absolute_url }}';">
+                    <div class="two wide column">
+                        <img class="ui tiny circular image" src="{{ profile.avatar.url }}">
                     </div>
-                    <div class="thirteen wide column">
+                    <div class="eight wide column">
                         <h3>{{ profile.user }}</h3>
                         <p>{{ profile.bio }}</p>
-                        <a href="{{ profile.get_absolute_url }}"><button class="ui primary button mt-5 w-big">See Profile</button></a>
 
+
+                    </div>
+                    <div class="six wide column">
                         {% if profile.user not in relationship_receiver and profile.user not in relationship_sender %}
                             <form action="{% url 'send-invite' %}" method="POST">
                                 {% csrf_token %}
@@ -30,16 +32,12 @@
 
                         {% if profile.user in relationship_receiver and request.user not in profile.friends.all %}
                             <form action="{% url 'remove-friend' %}" method="POST">
-                            {% csrf_token %}
+                                {% csrf_token %}
                                 <input type="hidden" name="profile_pk" value="{{ profile.pk }}">
-                            <button type="submit" class="ui basic button mt-5 w-big">
+                                <button type="submit" class="ui basic button mt-5 w-big">
                                     <i class="user icon "></i> Pending
                                 </button>
                             </form>
-{#                            <button type="submit" class="ui disabled button mt-5 w-big">#}
-{#                                <i class="user icon"></i> Pending#}
-{#                            </button>#}
-
                         {% endif %}
 
                         {% if request.user in profile.friends.all %}
