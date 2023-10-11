@@ -90,21 +90,21 @@ This Django-based social media project is designed as a versatile and feature-ri
 
 ### Images
 
-![alt text](img1.png)
+![alt text](images/img1.png)
 
 ---
 
-![alt text](img2.png)
+![alt text](images/img2.png)
 
 ---
 
-![alt text](img3.png)
+![alt text](images/img3.png)
 
 ---
 
-![alt text](img4.png)
+![alt text](images/img4.png)
 
 ---
 
-![alt text](img5.png)
+![alt text](images/img5.png)
 
