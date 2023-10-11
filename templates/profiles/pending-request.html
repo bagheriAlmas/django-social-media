@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}
+    Pending Requests
+{% endblock %}
+{% block content %}
+    <h3 style="margin-top: 20px">Pending Requests</h3>
+    {% if is_empty %}
+        <h1>No pending profile to show </h1>
+    {% endif %}
+    {% for user in pending_request_users %}
+        <div class="ui segment">
+            <div class="ui grid">
+                <div class="row">
+                    <div class="three wide column">
+                        <img class="ui small circular image" src="{{ user.profile.avatar.url }}">
+                    </div>
+                    <div class="thirteen wide column">
+                        <h3>{{ user.profile.user }}</h3>
+                        <p>{{ user.profile.bio }}</p>
+                        <a href="{{ user.profile.get_absolute_url }}"><button class="ui primary button mt-5 w-big">See Profile</button></a>
+
+
+
+                       <form action="{% url 'remove-friend' %}" method="POST">
+                            {% csrf_token %}
+                                <input type="hidden" name="profile_pk" value="{{ user.profile.pk }}">
+                            <button type="submit" class="ui basic button mt-5 w-big">
+                                    <i class="user icon "></i> Cancle Request
+                                </button>
+                            </form>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
