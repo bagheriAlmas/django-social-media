@@ -98,11 +98,6 @@ def like_unlike_post(request):
             post_obj.save()
             like.save()
 
-        # data = {
-        #     'value': like.value,
-        #     'likes': post_obj.liked.all().count()
-        # }
-        # return JsonResponse(data, safe=False)
     return redirect('post-list')
 
 
@@ -132,18 +127,3 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
         else:
             form.add_error(None, "You need to be the author of the post in order to update this post")
             return super().form_valid(form)
-
-
-def index(request):
-    form = ImageForm(request.POST or None, request.FILES or None)
-    profile = Profile.objects.get(user=request.user)
-
-    if form.is_valid():
-        instance = form.save(commit=False)
-        instance.author = profile
-        instance.save()
-        return JsonResponse({'message': 'works'})
-    context = {
-        'form': form
-    }
-    return render(request, 'test/test.html', context)
